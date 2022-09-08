@@ -62,10 +62,16 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
 
     sqliteController = SQLiteController();
+
+    getListDogsFirstTime();
+  }
+
+  void getListDogsFirstTime() async {
+    await sqliteController.initializeDatabase();
+    getListDogs();
   }
 
   void getListDogs() async {
-    await sqliteController.initializeDatabase();
     _dogs.clear();
     _dogs = await sqliteController.dogs();
 
@@ -78,8 +84,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-
-    getListDogs();
 
     String sDogs = '';
 
@@ -131,10 +135,11 @@ class _MyHomePageState extends State<MyHomePage> {
             children: <Widget>[
               FloatingActionButton(
                 onPressed: () {
-                  setState(() {
+                  setState(() async {
                     _counter++;
                     Dog fido = Dog(name: 'Fido$_counter', age: 35);
-                    sqliteController.insertDog(fido);
+                    await sqliteController.insertDog(fido);
+                    getListDogs();
                   });
                 },
                 // add event <=== new
@@ -145,10 +150,11 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               FloatingActionButton(
                 onPressed: () {
-                  setState(() {
+                  setState(() async {
                     Dog fido = Dog(name: 'Fido$_counter', age: 35);
-                    sqliteController.deleteDog(fido.name);
+                    await sqliteController.deleteDog(fido.name);
                     _counter--;
+                    getListDogs();
                   });
                 },
                 // add event <=== new

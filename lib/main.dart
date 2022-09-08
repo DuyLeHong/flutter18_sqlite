@@ -13,11 +13,11 @@ void main() async {
   // Open the database and store the reference.
 
   database = openDatabase(
-    join(await getDatabasesPath(), 'doggie_database.db'),
+    join(await getDatabasesPath(), 'doggie_database2.db'),
     onCreate: (db, version) {
       // Run the CREATE TABLE statement on the database.
       return db.execute(
-        'CREATE TABLE dogs(id INTEGER PRIMARY KEY, name TEXT, age INTEGER)',
+        'CREATE TABLE dogs(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, age INTEGER)',
       );
     },
     // Set the version. This executes the onCreate function and provides a
@@ -32,7 +32,28 @@ void main() async {
     age: 35,
   );
 
+  var fido1 = const Dog(
+    id: 1,
+    name: 'Fido',
+    age: 35,
+  );
+
+  var fido2 = const Dog(
+    id: 2,
+    name: 'Fido',
+    age: 35,
+  );
+
+  var fido3 = const Dog(
+    id: 3,
+    name: 'Fido',
+    age: 35,
+  );
+
   await insertDog(fido);
+  await insertDog(fido1);
+  await insertDog(fido2);
+  await insertDog(fido3);
 
   // Now, use the method above to retrieve all the dogs.
   print(await dogs()); // Prints a list that include Fido.
@@ -67,7 +88,7 @@ Future<void> insertDog(Dog dog) async {
   await db.insert(
     'dogs',
     dog.toMap(),
-    conflictAlgorithm: ConflictAlgorithm.replace,
+    conflictAlgorithm: ConflictAlgorithm.ignore,
   );
 }
 

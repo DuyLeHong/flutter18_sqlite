@@ -6,6 +6,9 @@ import 'dog_model.dart';
 
 late Future<Database> database;
 
+const DB_NAME = 'doggie_database2.db';
+const TABLE_NAME = 'dogs';
+
 void main() async {
   // Avoid errors caused by flutter upgrade.
   // Importing 'package:flutter/widgets.dart' is required.
@@ -17,7 +20,7 @@ void main() async {
     onCreate: (db, version) {
       // Run the CREATE TABLE statement on the database.
       return db.execute(
-        'CREATE TABLE dogs(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, age INTEGER)',
+        'CREATE TABLE $TABLE_NAME (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, age INTEGER)',
       );
     },
     // Set the version. This executes the onCreate function and provides a
@@ -32,28 +35,10 @@ void main() async {
     age: 35,
   );
 
-  var fido1 = const Dog(
-    id: 1,
-    name: 'Fido',
-    age: 35,
-  );
-
-  var fido2 = const Dog(
-    id: 2,
-    name: 'Fido',
-    age: 35,
-  );
-
-  var fido3 = const Dog(
-    id: 3,
-    name: 'Fido',
-    age: 35,
-  );
-
   await insertDog(fido);
-  await insertDog(fido1);
-  await insertDog(fido2);
-  await insertDog(fido3);
+  await insertDog(fido);
+  await insertDog(fido);
+  await insertDog(fido);
 
   // Now, use the method above to retrieve all the dogs.
   print(await dogs()); // Prints a list that include Fido.
@@ -85,11 +70,13 @@ Future<void> insertDog(Dog dog) async {
   // `conflictAlgorithm` to use in case the same dog is inserted twice.
   //
   // In this case, replace any previous data.
-  await db.insert(
-    'dogs',
-    dog.toMap(),
-    conflictAlgorithm: ConflictAlgorithm.ignore,
-  );
+  // await db.insert(
+  //   'dogs',
+  //   dog.toMap(),
+  //   conflictAlgorithm: ConflictAlgorithm.ignore,
+  // );
+
+  await db.rawInsert('INSERT INTO $TABLE_NAME (NAME,AGE) VALUES(\'${dog.name}\',${dog.age})');
 }
 
 // A method that retrieves all the dogs from the dogs table.
@@ -98,7 +85,9 @@ Future<List<Dog>> dogs() async {
   final db = await database;
 
   // Query the table for all The Dogs.
-  final List<Map<String, dynamic>> maps = await db.query('dogs');
+  //final List<Map<String, dynamic>> maps = await db.query('dogs');
+
+  final List<Map<String, dynamic>> maps = await db.rawQuery('Select * from $TABLE_NAME');
 
   // Convert the List<Map<String, dynamic> into a List<Dog>.
   return List.generate(maps.length, (i) {
@@ -115,6 +104,9 @@ Future<void> updateDog(Dog dog) async {
   final db = await database;
 
   // Update the given Dog.
+
+  // UPDATE dogs SET name = 'milu' WHERE id = 1
+
   await db.update(
     'dogs',
     dog.toMap(),

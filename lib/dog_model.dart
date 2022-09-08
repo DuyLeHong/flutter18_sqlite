@@ -1,11 +1,11 @@
 
 class Dog {
-  final int id;
+  int? id;
   final String name;
   final int age;
 
-  const Dog({
-    required this.id,
+  Dog({
+    this.id,
     required this.name,
     required this.age,
   });
@@ -23,6 +23,10 @@ class Dog {
   @override
   String toString() {
     return 'Dog{id: $id, name: $name, age: $age}';
+  }
+
+  String toString2() {
+    return 'Dog{name: $name, age: $age}';
   }
 
 // Implement toString to make it easier to see information about

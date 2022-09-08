@@ -134,12 +134,15 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               FloatingActionButton(
-                onPressed: () {
-                  setState(() async {
-                    _counter++;
-                    Dog fido = Dog(name: 'Fido$_counter', age: 35);
-                    await sqliteController.insertDog(fido);
-                    getListDogs();
+                onPressed: () async {
+
+                  _counter++;
+                  Dog fido = Dog(name: 'Fido$_counter', age: 35);
+                  await sqliteController.insertDog(fido);
+                  getListDogs();
+
+                  setState(() {
+
                   });
                 },
                 // add event <=== new
@@ -149,12 +152,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 width: 10,
               ),
               FloatingActionButton(
-                onPressed: () {
-                  setState(() async {
-                    Dog fido = Dog(name: 'Fido$_counter', age: 35);
-                    await sqliteController.deleteDog(fido.name);
-                    _counter--;
-                    getListDogs();
+                onPressed: () async {
+
+                  Dog fido = Dog(name: 'Fido$_counter', age: 35);
+                  await sqliteController.deleteDog(fido.name);
+                  _counter--;
+                  getListDogs();
+
+                  setState(() {
+
                   });
                 },
                 // add event <=== new
